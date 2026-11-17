@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Acovia Core · 世界与玩法介绍</title>
+<meta name="description" content="Acovia 中世纪原版生存服务器的世界与玩法介绍：主世界、资源维度、永夜古森林，以及物品、附魔与主城指引。">
+<style>
+  /* 字体：把官网的 songer.ttf 放到本文件同目录即可启用，否则回落到系统宋体 */
+  @font-face {
+    font-family: "TsangerYuYangT";
+    src: url("./songer.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #0b0a08;
+    --panel: #12100c;
+    --panel-2: #17140f;
+    --text: #f1e8d6;
+    --muted: #a99b84;
+    --faint: #756957;
+    --amber: #ffb02e;
+    --amber-hi: #ffaf00;
+    --amber-soft: rgba(255, 176, 46, .1);
+    --line: #2a241b;
+    --line-strong: #443a2a;
+    --ink: #171006;
+    --radius: 8px;
+    --serif: "TsangerYuYangT", "仓耳渔阳体", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 84px;
+  }
+
+  body {
+    margin: 0;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.8;
+    background:
+      radial-gradient(ellipse 60% 45% at 50% -12%, rgba(255, 176, 46, .085), transparent 70%),
+      radial-gradient(ellipse 42% 34% at 88% 8%, rgba(255, 176, 46, .04), transparent 72%),
+      var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--amber); color: var(--ink); }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  .wrap {
+    width: 100%;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11, 10, 8, .87);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 64px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-family: var(--serif);
+    font-size: .98rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--text);
+  }
+  .brand:hover { text-decoration: none; }
+
+  .brand-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 0 4px rgba(255, 176, 46, .11), 0 0 16px rgba(255, 176, 46, .5);
+  }
+
+  .brand small {
+    color: var(--faint);
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: .66rem;
+    letter-spacing: .12em;
+  }
+
+  .nav {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav a {
+    color: var(--muted);
+    font-size: .82rem;
+    padding: 6px 11px;
+    border-radius: 6px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    transition: color .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .nav a:hover { color: var(--text); background: rgba(255, 176, 46, .045); text-decoration: none; }
+  .nav a.active { color: var(--amber); border-color: rgba(255, 176, 46, .26); background: var(--amber-soft); }
+
+  /* ---------- 首屏 ---------- */
+  .hero { padding: clamp(64px, 11vh, 110px) 0 48px; }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.08fr .92fr;
+    gap: 52px;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .22em;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--amber), transparent);
+  }
+
+  h1 {
+    margin: 0 0 22px;
+    font-family: var(--serif);
+    font-size: clamp(3.1rem, 8vw, 5.2rem);
+    font-weight: 800;
+    line-height: .98;
+    letter-spacing: .01em;
+    color: var(--text);
+  }
+
+  .hero p.sub {
+    margin: 0 0 28px;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    line-height: 1.9;
+    max-width: 46ch;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .04em;
+    padding: 4px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip.amber { color: var(--amber); border-color: rgba(255, 176, 46, .32); background: var(--amber-soft); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid var(--line-strong);
+    border-radius: 7px;
+    font-size: .85rem;
+    color: var(--text);
+    background: transparent;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .btn:hover { text-decoration: none; border-color: var(--amber); transform: translateY(-1px); }
+  .btn.primary {
+    border-color: var(--amber);
+    background: var(--amber);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .btn.primary:hover { background: var(--amber-hi); border-color: var(--amber-hi); }
+
+  /* 三个世界面板 */
+  .worlds-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+  }
+
+  .worlds-head {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    color: var(--faint);
+    margin-bottom: 16px;
+    padding-left: 2px;
+  }
+
+  .world-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+
+  .world-list li {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px;
+    border-radius: 7px;
+    border-bottom: 1px solid var(--line);
+    transition: background .25s ease, border-radius .25s ease;
+  }
+  .world-list li:last-child { border-bottom: 0; }
+  .world-list li:hover {
+    border-radius: 24px;
+    background: linear-gradient(90deg, rgba(255, 176, 46, .05), transparent 72%);
+  }
+
+  .w-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .w-main { background: var(--amber); box-shadow: 0 0 12px rgba(255, 176, 46, .55); }
+  .w-res  { background: rgba(255, 176, 46, .55); }
+  .w-nir  { background: var(--faint); }
+
+  .world-list b {
+    display: block;
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: .02em;
+  }
+  .world-list .desc { display: block; font-size: .76rem; color: var(--muted); line-height: 1.55; margin-top: 2px; }
+
+  .w-tag {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .06em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .w-tag.ok { color: var(--amber); border-color: rgba(255, 176, 46, .32); }
+  .w-tag.warn { color: var(--muted); border-color: var(--line-strong); }
+  .w-tag.bad { color: var(--text); border-color: rgba(255, 176, 46, .42); background: rgba(255, 176, 46, .13); }
+
+  /* ---------- 数据条 ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 52px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stat {
+    padding: 22px 20px;
+    border-right: 1px solid var(--line);
+  }
+  .stat:last-child { border-right: 0; }
+  .stat:first-child { padding-left: 0; }
+
+  .stat b {
+    display: block;
+    font-family: var(--serif);
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--amber);
+    line-height: 1.2;
+    letter-spacing: .02em;
+  }
+  .stat span { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; color: var(--faint); }
+
+  /* ---------- 通用区块 ---------- */
+  .section { padding: 72px 0; border-top: 1px solid var(--line); }
+
+  .section:first-of-type { border-top: 0; }
+
+  .section-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .2em;
+    color: var(--amber);
+    opacity: .9;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(1.55rem, 2.9vw, 2.15rem);
+    font-weight: 700;
+    letter-spacing: .015em;
+    line-height: 1.3;
+  }
+
+  .lead {
+    margin: 14px 0 34px;
+    color: var(--muted);
+    max-width: 66ch;
+    font-size: .97rem;
+    line-height: 1.9;
+  }
+
+  h3 { margin: 0 0 8px; font-family: var(--serif); font-size: 1.06rem; font-weight: 700; letter-spacing: .02em; }
+
+  /* ---------- 卡片 ---------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(276px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    position: relative;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    transition: border-color .25s ease, background .25s ease;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: var(--line-strong);
+    background: var(--panel-2);
+  }
+  .card:hover::after { opacity: 1; }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 176, 46, .45), transparent);
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+
+  .card p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.85; }
+  .card p + p { margin-top: 10px; }
+
+  .card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+
+  .card .glyph {
+    display: block;
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .16em;
+    color: var(--faint);
+    margin-bottom: 10px;
+  }
+
+  .term { color: var(--amber); font-weight: 600; }
+
+  /* ---------- 引语 ---------- */
+  .quote {
+    margin: 32px 0 0;
+    padding: 20px 24px;
+    border-left: 2px solid rgba(255, 176, 46, .5);
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(90deg, rgba(255, 176, 46, .055), transparent 72%);
+    color: var(--muted);
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.95;
+    letter-spacing: .02em;
+  }
+  .quote footer {
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .08em;
+    color: var(--faint);
+  }
+
+  /* ---------- 指引 ---------- */
+  .places { display: grid; gap: 0; border-top: 1px solid var(--line); }
+
+  .place {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--line);
+    transition: 0.3s;
+  }
+  .place:hover {
+    border-radius: 26px;
+    background: linear-gradient(90deg, rgba(255, 176, 46, .045), transparent 72%);
+  }
+  .place b {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+  .place .where { font-family: var(--mono); font-size: .64rem; letter-spacing: .06em; color: var(--faint); margin-top: 3px; }
+  .place p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.8; }
+  .place .coord {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .04em;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+
+  /* ---------- 提示 ---------- */
+  .tips { display: grid; gap: 0; border-top: 1px solid var(--line); }
+
+  .tip {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 17px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tip .no {
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .1em;
+    color: var(--amber);
+    padding-top: 4px;
+    min-width: 22px;
+  }
+  .tip p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.8; }
+  .tip p b { color: var(--text); font-weight: 600; }
+
+  .note {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-left: 2px solid rgba(255, 176, 46, .5);
+    border-radius: 0 8px 8px 0;
+    background: rgba(255, 176, 46, .05);
+    color: var(--muted);
+    font-size: .88rem;
+  }
+
+  /* ---------- 页脚 ---------- */
+  footer.site {
+    border-top: 1px solid var(--line);
+    margin-top: 88px;
+    padding: 26px 0 46px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .04em;
+    line-height: 1.9;
+  }
+  footer.site .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer.site a { color: var(--muted); }
+
+  /* ---------- 动效 ---------- */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .6s ease, transform .6s cubic-bezier(.22, .61, .36, 1);
+  }
+  .js .reveal.in { opacity: 1; transform: none; }
+
+  :focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .btn:hover { transform: none; }
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: 0; }
+    .stat:nth-child(3) { padding-left: 0; border-top: 1px solid var(--line); }
+    .stat:nth-child(4) { border-top: 1px solid var(--line); }
+    .place { grid-template-columns: 1fr auto; }
+    .place p { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 20px; }
+    .section { padding: 56px 0; }
+    .brand small { display: none; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat b { font-size: 1.5rem; }
+    .place { grid-template-columns: 1fr; gap: 6px; }
+    .place .coord { justify-self: start; }
+    footer.site { margin-top: 64px; }
+  }
+</style>
+<script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#top">
+      <span class="brand-dot" aria-hidden="true"></span>
+      Acovia Core
+      <small>世界与玩法</small>
+    </a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#about">概览</a>
+      <a href="#worlds">三个世界</a>
+      <a href="#gameplay">玩法</a>
+      <a href="#items">物品</a>
+      <a href="#enchantments">附魔</a>
+      <a href="#town">主城指引</a>
+      <a href="#tips">生存提示</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= 首屏 ================= -->
+  <section class="hero wrap" id="top">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">VANILLA · MEDIEVAL · JAVA EDITION</div>
+        <h1>Acovia Core</h1>
+        <p class="sub">
+          一台中世纪风格的原版生存服务器。主世界用来建，资源维度用来挖，
+          而永夜古森林，是用来流放的。
+        </p>
+        <div class="chips">
+          <span class="chip amber">三个世界</span>
+          <span class="chip">五件特殊物品</span>
+          <span class="chip">六种附魔</span>
+          <span class="chip">纯原版</span>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="#worlds">看看三个世界</a>
+          <a class="btn" href="#items">物品图鉴</a>
+        </div>
+      </div>
+
+      <div class="worlds-panel reveal" aria-label="三个世界一览">
+        <div class="worlds-head">三个世界</div>
+        <ul class="world-list">
+          <li>
+            <span class="w-dot w-main" aria-hidden="true"></span>
+            <div>
+              <b>主世界</b>
+              <span class="desc">建筑与地形都被保护着</span>
+            </div>
+            <span class="w-tag ok">定居</span>
+          </li>
+          <li>
+            <span class="w-dot w-res" aria-hidden="true"></span>
+            <div>
+              <b>资源维度</b>
+              <span class="desc">与主世界同源的平行世界</span>
+            </div>
+            <span class="w-tag warn">采集</span>
+          </li>
+          <li>
+            <span class="w-dot w-nir" aria-hidden="true"></span>
+            <div>
+              <b>永夜古森林</b>
+              <span class="desc">无光、无床、无归路</span>
+            </div>
+            <span class="w-tag bad">流放</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stats reveal">
+      <div class="stat"><b>3</b><span>个世界</span></div>
+      <div class="stat"><b>5</b><span>件特殊物品</span></div>
+      <div class="stat"><b>6</b><span>种自定义附魔</span></div>
+      <div class="stat"><b>3</b><span>处主城设施</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 概览 ================= -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>这是什么样的服务器</h2>
+      </div>
+      <p class="lead">
+        Acovia 是一台以原版生存为核心的中世纪风格服务器：正版验证，不限制模组加载器，
+        所有人都跑在同一套原版规则上。它没有把世界改造成另一款游戏，而是更在意地形、建筑，
+        以及玩家之间慢慢长出来的关系。
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <span class="glyph">01 / 保护</span>
+          <h3>主世界只建不挖</h3>
+          <p>建筑和地形被刻意保护，所以主世界不提倡挖矿与破坏。需要大量材料时，所有人一起去资源维度采集。</p>
+        </div>
+        <div class="card reveal">
+          <span class="glyph">02 / 兜底</span>
+          <h3>死亡不是终点</h3>
+          <p>两件保命道具把玩家从死亡边缘拉回主城，替代了传统的「死亡不掉落」思路。</p>
+        </div>
+        <div class="card reveal">
+          <span class="glyph">03 / 成长</span>
+          <h3>附魔就是工具</h3>
+          <p>六种自定义附魔不走随机掉落，而是明码标价摆在附魔商店里，用绿宝石换。</p>
+        </div>
+        <div class="card reveal">
+          <span class="glyph">04 / 节奏</span>
+          <h3>更新很勤，玩法会变</h3>
+          <p>版本、维度和规则都在持续变化，重要改动会记录在服务器的更新日志里。老玩家也得偶尔回来看看。</p>
+        </div>
+      </div>
+
+      <div class="note">
+        小提示：这个服的存档会定期公开。离开的人也能把自己的建筑留在世界里，后来的人仍可以路过、观看，
+        或者在里面找到一点旧日的痕迹。
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 三个世界 ================= -->
+  <section class="section" id="worlds">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>三个世界</h2>
+      </div>
+      <p class="lead">
+        整套规则的核心，是让三个世界各司其职。你在哪个世界，就决定了你能做什么、不能做什么。
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <span class="glyph">定居之地</span>
+          <h3>主世界</h3>
+          <p>小镇、建筑和地形都在这里，也是唯一被严格保护的地方。世界被一圈边界圈起来，走出边界的人不会撞墙，
+          而是会被直接送去资源维度——算是留给居民的一点体面。</p>
+          <p>想建地狱门、造小型生电机器，请按公告指定的区域进行。</p>
+          <div class="tag-row">
+            <span class="chip amber">建筑保护</span>
+            <span class="chip">禁止挖矿</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">采集之地</span>
+          <h3>资源维度</h3>
+          <p>一个和主世界同种子、同地形的平行世界，但没有任何保护。想怎么挖、怎么炸、怎么造机器都可以。</p>
+          <p>进入方式是在主城指定位置右键一块告示牌；如果告示牌不见了，找管理员重新生成即可。</p>
+          <div class="tag-row">
+            <span class="chip amber">自由采集</span>
+            <span class="chip">同种子</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">流放之地</span>
+          <h3>永夜古森林</h3>
+          <p>一片没有边界的原初森林，时间永远停在夜里，天空没有光。这里的树高到十六至四十八格，
+          地面铺满苔藓与化石，走进去就无法保证不迷路。</p>
+          <p>床摆不下来，重生锚也失效。理论上它是个惩罚场所，实际上也有人会主动去探。</p>
+          <div class="tag-row">
+            <span class="chip amber">永夜</span>
+            <span class="chip">无边界</span>
+            <span class="chip">无法重生</span>
+          </div>
+        </div>
+      </div>
+
+      <blockquote class="quote">
+        多希望时间与你永远停滞在这美丽日落时分。
+        <footer>—— 出自服务器更新日志</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ================= 玩法 ================= -->
+  <section class="section" id="gameplay">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2>五套玩法</h2>
+      </div>
+      <p class="lead">
+        从跨世界旅行到日常作息，这五件事构成了 Acovia 的日常节奏。
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <span class="glyph">边界</span>
+          <h3>出界即换世界</h3>
+          <p>主世界的边界只有一千格见方。一旦走出边界附近的缓冲带，就会被系统直接传送到资源维度的同一坐标附近，
+          不用担心撞墙，也不用担心走丢。</p>
+          <div class="tag-row">
+            <span class="chip">一千格见方</span>
+            <span class="chip">自动传送</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">兜底</span>
+          <h3>死亡会被拉回主城</h3>
+          <p><span class="term">Eroven</span> 在持有者受到致命伤害时自动触发，救回一条命并把人送回主城出生点；
+          <span class="term">回溯卷轴</span> 则是主动使用，喝完两秒回到主城。</p>
+          <div class="tag-row">
+            <span class="chip">Eroven</span>
+            <span class="chip">回溯卷轴</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">成长</span>
+          <h3>附魔商店</h3>
+          <p>六种自定义附魔明码标价：先买一本「魔导书」当底，再用绿宝石把它换成对应的附魔书。
+          最贵的那一种只展示、不出售，算是留给服主自己的玩具。</p>
+          <div class="tag-row">
+            <span class="chip amber">绿宝石换附魔书</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">设施</span>
+          <h3>主城服务</h3>
+          <p>资源管理局卖木材和石材，附魔商店卖通用附魔书；广场上有可以骑的微型乐魂，还有指向世界原点的指南针，
+          适合刚落地的新人认路。</p>
+          <div class="tag-row">
+            <span class="chip">木材与石材</span>
+            <span class="chip">附魔书</span>
+            <span class="chip">乐魂坐骑</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">节奏</span>
+          <h3>日龄与新手保护</h3>
+          <p>系统会给每位玩家记一个「日龄」，相当于在服务器里度过的天数。日龄不满五十天时死亡不掉落，
+          过了这个门槛，保护就自动失效。</p>
+          <div class="tag-row">
+            <span class="chip amber">前 50 天死亡不掉落</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">夜晚</span>
+          <h3>床跳不过夜晚</h3>
+          <p>这个服的夜晚不好跳过。即使躺上床，时间也会被重新拨回夜里，所以想熬过黑夜只能靠照明和同伴。</p>
+          <div class="tag-row">
+            <span class="chip">无法跳过黑夜</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 物品 ================= -->
+  <section class="section" id="items">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>物品图鉴</h2>
+      </div>
+      <p class="lead">
+        五件东西，几乎覆盖了所有「非原版」的随身装备。它们都伪装成原版物品，只有名字和效果不同。
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <span class="glyph">花朵 · 头饰 · 保命</span>
+          <h3>Eroven</h3>
+          <p>由任意花朵和钻石合成，外形是火把花，可以戴在头上。受到致命伤害时保住一命，
+          附带抗火与短暂无敌，然后被送主城。</p>
+          <p>它是死亡不掉落的替代方案，也是远行前最值得带的东西。</p>
+          <div class="tag-row">
+            <span class="chip amber">花 + 钻石</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">纸卷 · 消耗品 · 回城</span>
+          <h3>回溯卷轴</h3>
+          <p>纸加末影珍珠就能合成。按住使用两秒回到主城，外观是一张纸，不占多少背包空间。</p>
+          <p>探索新维度或远行前，建议随身带一张。</p>
+          <div class="tag-row">
+            <span class="chip amber">纸 + 末影珍珠</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">长矛 · 魔法武器</span>
+          <h3>魔导棒</h3>
+          <p>钻石、青金石和木棍做成的一根「棍子」，外观朴素，其实是 Control_AI 附魔的专属载体，
+          用来开关附近生物的行动。</p>
+          <div class="tag-row">
+            <span class="chip">钻石 + 青金石 + 木棍</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">铲子 · 建造工具</span>
+          <h3>铺路棒</h3>
+          <p>下界之星加命令方块合成，自带「铺路」附魔。对土径左键就能铺出石料路面，
+          挖什么都会掉落，但挖掘速度为零——它只负责铺路。</p>
+          <div class="tag-row">
+            <span class="chip amber">下界之星 + 命令方块</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">成书 · 传说</span>
+          <h3>The book of Niravos</h3>
+          <p>一本被混淆文字包裹的书，封面写着「The book of Niravos」，落款是 Acovia。书页上有一行
+          暗红色的 <span class="term">ETERNITY</span>——点下去的人，会去往永夜古森林。</p>
+          <div class="tag-row">
+            <span class="chip amber">点击即流放</span>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">提示</span>
+          <h3>它们都做不了量产</h3>
+          <p>几件核心物品的配方都要用到下界之星或命令方块，普通玩家拿不到。
+          所以它们是「管理员工具」，而不是成长路线上的奖励。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 附魔 ================= -->
+  <section class="section" id="enchantments">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2>附魔图鉴</h2>
+      </div>
+      <p class="lead">
+        六种附魔各有明确用途，价格从十二到六十四颗绿宝石不等。买之前最好先想清楚要拿它做什么。
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <span class="glyph">魔导棒 · 诅咒</span>
+          <h3>Control_AI</h3>
+          <p>击中时开关附近生物的 AI，让它停下动作并转向你。代价是这把棒子几乎打不出伤害，它更像一个开关。</p>
+          <div class="tag-row"><span class="chip amber">控制生物</span></div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">弓 · 一次性</span>
+          <h3>Destroy</h3>
+          <p>一箭定生死。命中处的爆炸范围极其夸张，射出一箭后弓就会当场损毁，是真正的「一次性武器」。</p>
+          <div class="tag-row"><span class="chip amber">大范围爆炸</span><span class="chip">用后即毁</span></div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">弓 · 爆炸</span>
+          <h3>Explode</h3>
+          <p>命中引发半径约四格的爆炸，箭不会消失得那么彻底，是更常规的一档。</p>
+          <div class="tag-row"><span class="chip">半径四格</span></div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">弓 · 雷电</span>
+          <h3>Lightning</h3>
+          <p>箭落下的位置，如果三格内站着别的生物，天空就会落下一道闪电。落点偏了就打空，很吃准头。</p>
+          <div class="tag-row"><span class="chip">落点雷击</span></div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">铺路棒 · 建造</span>
+          <h3>Makeway</h3>
+          <p>对土径左键，直接铺成石料路面。适合大规模造城，是建筑玩家最实用的一件。</p>
+          <div class="tag-row"><span class="chip">土径 → 石路</span></div>
+        </div>
+
+        <div class="card reveal">
+          <span class="glyph">成书 · 流放</span>
+          <h3>Imprison</h3>
+          <p>写在书上的附魔。被它击中的目标会被扔进永夜古森林的随机位置，距离原点最远可达五千格。</p>
+          <div class="tag-row"><span class="chip amber">送进永夜</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 主城指引 ================= -->
+  <section class="section" id="town">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2>主城指引</h2>
+      </div>
+      <p class="lead">
+        刚进服的话，先去这三处地方转一圈，基本就能把生存必需品备齐了。
+      </p>
+
+      <div class="places">
+        <div class="place reveal">
+          <div>
+            <b>资源管理局</b>
+            <div class="where">买木材和石材</div>
+          </div>
+          <p>一枚绿宝石换十二个基础方块，木材九种、石材十几种，省去新人大老远跑去砍树挖石的功夫。</p>
+          <span class="coord">(184, 71, 128)</span>
+        </div>
+
+        <div class="place reveal">
+          <div>
+            <b>附魔商店</b>
+            <div class="where">买通用附魔书</div>
+          </div>
+          <p>先用纸张换绿宝石，再用绿宝石换附魔书；想上自定义附魔，记得先备一本魔导书做底。</p>
+          <span class="coord">(319, 63, 71)</span>
+        </div>
+
+        <div class="place reveal">
+          <div>
+            <b>资源维度入口</b>
+            <div class="where">右键告示牌进入</div>
+          </div>
+          <p>采集材料都从这里进资源维度。告示牌如果不在，找管理员重新生成一次就能恢复。</p>
+          <span class="coord">(129, 70, 132)</span>
+        </div>
+
+        <div class="place reveal">
+          <div>
+            <b>广场</b>
+            <div class="where">出生点与坐骑</div>
+          </div>
+          <p>死亡归来与回城都会落在广场附近；这里还能领到指向世界原点的指南针，也有可以骑的微型乐魂。</p>
+          <span class="coord">小镇出生点</span>
+        </div>
+      </div>
+
+      <div class="note">
+        坐标来自服务器公开介绍，若与游戏内实际位置有出入，以管理员公告为准。
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 生存提示 ================= -->
+  <section class="section" id="tips">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">07</span>
+        <h2>生存提示</h2>
+      </div>
+      <p class="lead">
+        几条老玩家默认、新人容易踩坑的事情，按重要程度排。
+      </p>
+
+      <div class="tips">
+        <div class="tip reveal">
+          <span class="no">01</span>
+          <p><b>主世界只建不挖。</b> 需要材料就去资源维度，在主世界挖矿、破坏地形和建筑都是违规的。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">02</span>
+          <p><b>出远门前带一张回溯卷轴。</b> 尤其是探索新维度、或者去永夜古森林的时候，回不来是真的回不来。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">03</span>
+          <p><b>别指望走出主世界边界。</b> 一千格见方之外没有新大陆，只有一次自动传送，目的地是资源维度。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">04</span>
+          <p><b>新手期死亡不掉落，但有期限。</b> 日龄满五十天之后保护就失效了，前面五十天别浪费。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">05</span>
+          <p><b>床跳不过夜晚。</b> 这个服不欢迎靠睡觉跳过黑夜的玩法，照明和同伴才是正经解法。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">06</span>
+          <p><b>别把魔导书当普通书用掉。</b> 它是附魔商店里所有自定义附魔的兑换底子，用错了就得再买一本。</p>
+        </div>
+        <div class="tip reveal">
+          <span class="no">07</span>
+          <p><b>大型机器请造在资源维度。</b> 主世界只留建筑，小型生电同样建议挪到资源维度去做。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  (function () {
+    "use strict";
+
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // 滚动显形
+    var revealItems = document.querySelectorAll(".reveal");
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      revealItems.forEach(function (el) { el.classList.add("in"); });
+    } else {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+      revealItems.forEach(function (el) { revealObserver.observe(el); });
+    }
+
+    // 导航高亮
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav a"));
+    var sections = navLinks
+      .map(function (link) { return document.querySelector(link.getAttribute("href")); })
+      .filter(Boolean);
+
+    function setActive(id) {
+      navLinks.forEach(function (link) {
+        link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+      });
+    }
+
+    if ("IntersectionObserver" in window && sections.length) {
+      var sectionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { setActive(entry.target.id); }
+        });
+      }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+      sections.forEach(function (section) { sectionObserver.observe(section); });
+    }
+  })();
+</script>
+
+</body>
+</html>
